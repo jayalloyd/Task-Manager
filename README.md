@@ -57,7 +57,7 @@ Install required libraries
 pnpm install react-bootstrap bootstrap uuid
 Run the application
 
-Copy code
+
 pnpm run dev
 ```
 ## 🧠 Code Logic Overview
