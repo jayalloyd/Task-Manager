@@ -32,6 +32,35 @@ export default function TaskManager() {
     setTasks(updatedTasks);
 
  }   
+ 
+
+ //editing feature
+const startEdit=(id,task)=>{
+setEditingId(id);
+setTempText(task);
+};
+
+ const saveEdit=(id)=>{
+  const updatedText=tasks.map((task)=>{
+    if(id===task.id){
+      return {...task,task:tempText};
+    }
+    return task;
+  });
+
+  setTasks(updatedText);
+  setEditingId(null);
+  setTempText("");
+};
+ 
+//toggle complete
+
+
+const toggleComplete = (id) => {
+  setTasks(tasks.map(t => 
+    t.id === id ? { ...t, completed: !t.completed } : t
+  ));
+};
 
   return (
     <div className="p-4 d-flex flex-column align-items-center">
