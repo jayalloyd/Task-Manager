@@ -6,7 +6,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-
 export default function TaskManager() {
   const [tasks, setTasks] = useState([
     { id: uuidv4(), task: "walking", completed: false },
@@ -15,8 +14,8 @@ export default function TaskManager() {
   ]);
 
   const [newTask, setNewTask] = useState("");
-  const [editingId, setEditingId] = useState(null); // Tracks which task is being edited
-  const [tempText, setTempText] = useState("");    // Holds text while editing
+  const [editingId, setEditingId] = useState(null); 
+  const [tempText, setTempText] = useState("");    
 
   // 1. Add New Task
   const addNewTask = (e) => {
@@ -26,41 +25,38 @@ export default function TaskManager() {
     setNewTask("");
   };
 
-  //delete task
- const deleteTask=(id)=>{
-    const updatedTasks=tasks.filter(task=>task.id !== id);
+  // 2. Delete Task
+  const deleteTask = (id) => {
+    
+    setTasks(tasks.filter(taskItem => taskItem.id !== id));
+  };
+
+  // 3. Start Editing
+  const startEdit = (id, taskText) => {
+    setEditingId(id);
+    setTempText(taskText);
+  };
+
+  // 4. Save Edit
+  const saveEdit = (id) => {
+    const updatedTasks = tasks.map((taskItem) => {
+      if (id === taskItem.id) {
+        return { ...taskItem, task: tempText };
+      }
+      return taskItem;
+    });
+
     setTasks(updatedTasks);
+    setEditingId(null);
+    setTempText("");
+  };
 
- }   
- 
-
- //editing feature
-const startEdit=(id,task)=>{
-setEditingId(id);
-setTempText(task);
-};
-
- const saveEdit=(id)=>{
-  const updatedText=tasks.map((task)=>{
-    if(id===task.id){
-      return {...task,task:tempText};
-    }
-    return task;
-  });
-
-  setTasks(updatedText);
-  setEditingId(null);
-  setTempText("");
-};
- 
-//toggle complete
-
-
-const toggleComplete = (id) => {
-  setTasks(tasks.map(t => 
-    t.id === id ? { ...t, completed: !t.completed } : t
-  ));
-};
+  // 5. Toggle Complete
+  const toggleComplete = (id) => {
+    setTasks(tasks.map(taskItem => 
+      taskItem.id === id ? { ...taskItem, completed: !taskItem.completed } : taskItem
+    ));
+  };
 
   return (
     <div className="p-4 d-flex flex-column align-items-center">
@@ -82,10 +78,10 @@ const toggleComplete = (id) => {
       <Card style={{ width: '22rem' }}>
         <Card.Header className="bg-primary text-white">Your Tasks</Card.Header>
         <ListGroup variant="flush">
-          {tasks.map((todo) => (
-            <ListGroup.Item key={todo.id} className="p-3">
-              {editingId === todo.id ? (
-                /* --- EDIT MODE (TEXT AREA) --- */
+          {tasks.map((taskItem) => (
+            <ListGroup.Item key={taskItem.id} className="p-3">
+              {editingId === taskItem.id ? (
+                /* --- EDIT MODE --- */
                 <div className="edit-section">
                   <Form.Control 
                     as="textarea" 
@@ -95,7 +91,7 @@ const toggleComplete = (id) => {
                     autoFocus
                   />
                   <div className="mt-2 d-flex gap-2">
-                    <Button variant="success" size="sm" onClick={() => saveEdit(todo.id)}>Save</Button>
+                    <Button variant="success" size="sm" onClick={() => saveEdit(taskItem.id)}>Save</Button>
                     <Button variant="outline-secondary" size="sm" onClick={() => setEditingId(null)}>Cancel</Button>
                   </div>
                 </div>
@@ -105,22 +101,20 @@ const toggleComplete = (id) => {
                   <div className="d-flex align-items-center mb-3">
                     <Form.Check 
                       type="checkbox"
-                      checked={todo.completed}
-                      onChange={() => toggleComplete(todo.id)}
+                      checked={taskItem.completed}
+                      onChange={() => toggleComplete(taskItem.id)}
                       label={
-                        <span style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}>
-                          {todo.task}
+                        <span style={{ textDecoration: taskItem.completed ? 'line-through' : 'none' }}>
+                          {taskItem.task}
                         </span>
                       }
                     />
                   </div>
                   <div className="d-flex gap-2">
-                    
-                    <Button variant="outline-secondary" size="sm" onClick={() => startEdit(todo.id, todo.task)}>
+                    <Button variant="outline-secondary" size="sm" onClick={() => startEdit(taskItem.id, taskItem.task)}>
                       Edit
                     </Button>
-                    
-                    <Button variant="outline-danger" size="sm" onClick={()=>deleteTask(todo.id)}>
+                    <Button variant="outline-danger" size="sm" onClick={() => deleteTask(taskItem.id)}>
                       Delete
                     </Button>
                   </div>
