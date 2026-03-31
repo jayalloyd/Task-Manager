@@ -31,8 +31,11 @@
   "overrides": {
     "rollup": "^4.22.4",
     "minimatch": "^9.0.5",
-     "flatted": ">=3.4.0"
+     "flatted": ">=3.4.0",
+      "picomatch": "^4.0.1", 
+    "brace-expansion": "^2.0.1"
   }
 }
   }
+
   
